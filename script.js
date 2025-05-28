@@ -10,7 +10,9 @@ const bSentences = [
     "playing soccer",
     "reading books",
     "watching movies",
-    "doing homework"
+    "doing homework",
+    "eating natto",
+    "studying"
 ];
 
 // Cached references
@@ -23,19 +25,27 @@ let moveHistory = [];
 
 // Create the board dynamically
 function createBoard() {
-    // Clear previous board if any
     gameContainer.innerHTML = "";
 
-    // Create board container
     const board = document.createElement("div");
     board.className = "game-board";
 
-    // Top-left corner empty
+    const rows = aSentences.length;
+    const cols = bSentences.length;
+
+    // Build grid template sizes dynamically:
+    const colSizes = new Array(cols).fill("100px").join(" ");
+    const rowSizes = new Array(rows).fill("100px").join(" ");
+
+    board.style.gridTemplateColumns = `120px ${colSizes}`;
+    board.style.gridTemplateRows = `50px ${rowSizes}`;
+
+    // corner cell
     const corner = document.createElement("div");
     corner.className = "corner";
     board.appendChild(corner);
 
-    // B labels (top row, columns 2-5)
+    // B labels on top row
     for (const bText of bSentences) {
         const bLabel = document.createElement("div");
         bLabel.className = "b-label";
@@ -45,22 +55,18 @@ function createBoard() {
 
     cells = [];
 
-    // For each row: add A label + 4 cells
-    for (let row = 0; row < aSentences.length; row++) {
-        // A label (first column)
+    for (let row = 0; row < rows; row++) {
         const aLabel = document.createElement("div");
         aLabel.className = "a-label";
         aLabel.textContent = aSentences[row];
         board.appendChild(aLabel);
 
-        // 4 cells in this row
-        for (let col = 0; col < bSentences.length; col++) {
+        for (let col = 0; col < cols; col++) {
             const cell = document.createElement("div");
             cell.className = "cell";
-            const cellIndex = row * bSentences.length + col;
+            const cellIndex = row * cols + col;
             cell.dataset.index = cellIndex;
 
-            // Add click listener
             cell.addEventListener("click", () => handleCellClick(cellIndex));
             board.appendChild(cell);
             cells.push(cell);
